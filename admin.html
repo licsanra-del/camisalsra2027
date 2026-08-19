@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resultados · Camisetas</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .admin-actions{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+    .admin-actions button{background:#e9efff;color:#1746a2}
+    .admin-actions .danger{background:#fee4e2;color:#b42318}
+    table{width:100%;border-collapse:collapse;font-size:14px}
+    th,td{padding:10px 8px;border-bottom:1px solid #e6eaf0;text-align:left}
+    th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#667085}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0 24px}
+    .stat{padding:16px;border:1px solid #d9e1ec;border-radius:14px;background:#f8fafc}
+    .stat strong{display:block;font-size:26px}
+    @media(max-width:700px){.stats{grid-template-columns:repeat(2,1fr)} .table-wrap{overflow:auto}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <div class="brand">
+        <div class="brand-mark">📊</div>
+        <div><p class="eyebrow">Administración</p><h1>Resultados de la consulta</h1><p class="subtitle">Datos almacenados en este navegador.</p></div>
+      </div>
+      <div class="lookup">
+        <div id="stats" class="stats"></div>
+        <div class="admin-actions">
+          <button onclick="exportCSV()">Exportar CSV</button>
+          <button onclick="location.href='index.html'">Volver al formulario</button>
+          <button class="danger" onclick="clearVotes()">Borrar datos de prueba</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Identificación</th><th>Nombre</th><th>Sección</th><th>Camiseta</th><th>Fecha</th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+<script>
+const votes = Object.values(JSON.parse(localStorage.getItem("camiseta_votes_v1") || "{}"));
+const choices = ["Camiseta A","Camiseta B","Camiseta C","Camiseta D"];
+document.getElementById("stats").innerHTML = choices.map(c => {
+  const n = votes.filter(v => v.shirt === c).length;
+  return `<div class="stat"><span>${c}</span><strong>${n}</strong><small>votos</small></div>`;
+}).join("");
+
+document.getElementById("rows").innerHTML = votes.length ? votes
+  .sort((a,b)=>a.group.localeCompare(b.group)||a.name.localeCompare(b.name))
+  .map(v => `<tr><td>${v.id}</td><td>${v.name}</td><td>${v.group}</td><td>${v.shirt}</td><td>${new Date(v.timestamp).toLocaleString("es-CR")}</td></tr>`)
+  .join("") : '<tr><td colspan="5">Todavía no hay votos registrados en este navegador.</td></tr>';
+
+function exportCSV(){
+  const header = ["Identificación","Nombre","Sección","Camiseta","Fecha"];
+  const lines = [header, ...votes.map(v => [v.id,v.name,v.group,v.shirt,new Date(v.timestamp).toLocaleString("es-CR")])];
+  const csv = lines.map(row => row.map(x => `"${String(x).replaceAll('"','""')}"`).join(",")).join("\n");
+  const blob = new Blob(["\ufeff"+csv], {type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="resultados_camisetas.csv"; a.click();
+  URL.revokeObjectURL(a.href);
+}
+function clearVotes(){
+  if(confirm("¿Desea borrar todos los datos de prueba guardados en este navegador?")){
+    localStorage.removeItem("camiseta_votes_v1"); location.reload();
+  }
+}
+</script>
+</body>
+</html>
