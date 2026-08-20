@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elección de camiseta</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <div class="brand">
+        <div class="brand-mark">👕</div>
+        <div>
+          <p class="eyebrow">Consulta estudiantil</p>
+          <h1>Elección de camiseta</h1>
+          <p class="subtitle">Digite su número de identificación para continuar.</p>
+        </div>
+      </div>
+
+      <div class="lookup">
+        <label for="studentId">Número de identificación</label>
+        <div class="input-wrap">
+          <input id="studentId" inputmode="numeric" autocomplete="off"
+                 placeholder="Ejemplo: 209260929" maxlength="20" />
+          <button id="searchBtn" type="button">Buscar</button>
+        </div>
+        <p id="lookupMessage" class="message" aria-live="polite"></p>
+      </div>
+
+      <section id="studentPanel" class="student-panel hidden">
+        <div class="student-grid">
+          <div>
+            <span class="field-label">Nombre</span>
+            <strong id="studentName"></strong>
+          </div>
+          <div>
+            <span class="field-label">Sección</span>
+            <strong id="studentGroup"></strong>
+          </div>
+        </div>
+      </section>
+
+      <section id="shirtSection" class="hidden">
+        <div class="section-heading">
+          <p class="eyebrow">Paso 2</p>
+          <h2>Seleccione su camiseta favorita</h2>
+          <p>Marque solamente una opción. Puede tocar una imagen para verla más grande.</p>
+        </div>
+
+        <div class="shirts" id="shirts">
+          <label class="shirt-option">
+            <input type="radio" name="shirt" value="Camiseta A" />
+            <img class="shirt-image" src="imagenes/camiseta-a.jpg" alt="Camiseta A" />
+            <span class="shirt-name">Camiseta A</span>
+          </label>
+
+          <label class="shirt-option">
+            <input type="radio" name="shirt" value="Camiseta B" />
+            <img class="shirt-image" src="imagenes/camiseta-b.jpg" alt="Camiseta B" />
+            <span class="shirt-name">Camiseta B</span>
+          </label>
+
+          <label class="shirt-option">
+            <input type="radio" name="shirt" value="Camiseta C" />
+            <img class="shirt-image" src="imagenes/camiseta-c.jpg" alt="Camiseta C" />
+            <span class="shirt-name">Camiseta C</span>
+          </label>
+
+          <label class="shirt-option">
+            <input type="radio" name="shirt" value="Camiseta D" />
+            <img class="shirt-image" src="imagenes/camiseta-d.jpg" alt="Camiseta D" />
+            <span class="shirt-name">Camiseta D</span>
+          </label>
+        </div>
+
+        <button id="submitBtn" class="primary" type="button">Enviar elección</button>
+        <p id="submitMessage" class="message center" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <p class="footnote">Versión 3.0 · Firebase + administración · <a href="admin.html">Administración</a></p>
+  </main>
+
+
+  <div id="imageModal" class="image-modal hidden" aria-hidden="true">
+    <button id="closeModal" class="modal-close" type="button" aria-label="Cerrar imagen">×</button>
+    <img id="modalImage" src="" alt="Vista ampliada de la camiseta" />
+    <p id="modalCaption"></p>
+  </div>
+
+  <script src="data.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

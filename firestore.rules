@@ -1,0 +1,40 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /elecciones/{studentId} {
+
+      // Formulario público: crear una sola elección por identificación.
+      allow create: if
+        !exists(/databases/$(database)/documents/elecciones/$(studentId))
+        && request.resource.data.keys().hasOnly([
+          'identificacion',
+          'nombre',
+          'seccion',
+          'camiseta',
+          'fechaHora'
+        ])
+        && request.resource.data.identificacion == studentId
+        && request.resource.data.identificacion is string
+        && request.resource.data.nombre is string
+        && request.resource.data.seccion is string
+        && request.resource.data.camiseta in [
+          'Camiseta A',
+          'Camiseta B',
+          'Camiseta C',
+          'Camiseta D'
+        ];
+
+      // Panel administrativo: cualquier usuario autenticado puede leer resultados.
+      allow read: if request.auth != null;
+
+      // Ni el formulario ni el panel modifican o eliminan votos.
+      allow update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
